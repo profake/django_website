@@ -1,8 +1,9 @@
-import sys
+import sys, os
 
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.conf import settings
+from django.shortcuts import render, get_object_or_404, redirect
+from django.template.response import TemplateResponse
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from .models import Post
@@ -71,8 +72,15 @@ def superuser_required():
 #     res = render(request, '', {"code": code_part, "input": y, "output": output})
 #     return res
 
-class PostDetailView(LoginRequiredMixin, DetailView):
-    model = Post
+class PostDetailView(LoginRequiredMixin, TemplateView):
+    template_name = 'blog/post_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context.update({
+            'post': Post.objects.get(pk=kwargs.get('pk')),
+        })
+        return context
 
     def post(self, request, *args, **kwargs):
         code_part = request.POST['code_area']
@@ -87,19 +95,28 @@ class PostDetailView(LoginRequiredMixin, DetailView):
 
         try:
             orig_stdout = sys.stdout
-            sys.stdout = open('file.txt', 'w')
+            sys.stdout = open(os.path.join(settings.MEDIA_ROOT, 'file.txt'), 'w')
             exec(code_part)
             sys.stdout.close()
             sys.stdout = orig_stdout
-            output = open('file.txt', 'r').read()
+            output = open(os.path.join(settings.MEDIA_ROOT, 'file.txt'), 'r')
+            output = output.read()
         except Exception as e:
             sys.stdout.close()
             sys.stdout = orig_stdout
-            output = e
+            output = e.read()
         print(output)
 
-        #return HttpResponseRedirect('')
-        return render(request, self.template_name, {"code": code_part, "input": original_input, "output": output})
+        context = self.get_context_data(**kwargs)
+        context.update({
+            'posts': Post.objects.get(pk=kwargs.get('pk')),
+            'code': code_part,
+            'input': original_input,
+            'output': output
+        })
+
+        return TemplateResponse(self.request, self.template_name, context)
+        # return render(request, '', {"code": code_part, "input": original_input, "output": output})
 
 
 @superuser_required()
