@@ -124,3 +124,6 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
 
 def about(request):
     return render(request, 'blog/about.html', {'title': 'About'})
+
+def welcome(request):
+    return render(request, 'blog/welcome.html', {'title': 'Welcome'})
