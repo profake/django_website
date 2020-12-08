@@ -40,6 +40,10 @@ ul {
   color: #444444;
 }
 
+.mainstuff{
+    min-height: 800px
+}
+
 a.article-title:hover {
   color: #428bca;
   text-decoration: none;
