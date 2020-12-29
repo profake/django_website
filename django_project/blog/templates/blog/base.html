@@ -33,7 +33,7 @@
             </div>
             <div class="navbar-nav mr-auto">
               <a class="navbar-brand" href="#">
-                <img src="{% static 'logo.png'%}" width="40" height="40" alt="">
+                <a href="{% url 'blog-home' %}"><img src="{% static 'logo.png'%}" width="50" height="50" alt="Home"></a>
               </a>
             </div>
             <!-- Navbar Right Side -->
@@ -63,19 +63,8 @@
                     </div>
                 {% endfor %}
             {% endif %}
-          {% block content %}{% endblock %}
-        </div>
-        <div class="col-md-4">
-          <div class="content-section">
-            <h3>Quick links</h3>
-            <p class='text-muted'>Shortcuts to various links
-              <ul class="list-group">
-                <li class="list-group-item list-group-item-light">Leaderboard</li>
-                <li class="list-group-item list-group-item-light">Announcements</li>
-                <li class="list-group-item list-group-item-light">Contests</li>
-              </ul>
-            </p>
-          </div>
+          {% block content %}
+          {% endblock %}
         </div>
       </div>
     </main>
