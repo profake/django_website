@@ -3,6 +3,7 @@ import sys, os
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.response import TemplateResponse
+from django.db.models import Count
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
@@ -12,7 +13,6 @@ from .models import Post
 def home(request):
     context = {
         'posts': Post.objects.all(),
-        'users': User.objects.all(),
     }
     return render(request, 'blog/home.html', context)
 
@@ -22,6 +22,21 @@ class PostListView(ListView):
     template_name = 'blog/home.html'
     context_object_name = 'posts'
     paginate_by = 5
+    ordering = ['-date_posted']
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+
+        users = []
+        data_counter = Post.objects.values('author') \
+                           .annotate(author_count=Count('author')) \
+                           .order_by('-author_count')[:6]
+
+        for aux in data_counter:
+            users.append(User.objects.filter(pk=aux['author']).first())
+
+        data['users'] = users
+        return data
 
 
 class UserPostListView(ListView):
