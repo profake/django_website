@@ -3,6 +3,7 @@ import sys, os
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.response import TemplateResponse
+from django.db.models import Count
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
@@ -21,6 +22,21 @@ class PostListView(ListView):
     template_name = 'blog/home.html'
     context_object_name = 'posts'
     paginate_by = 5
+    ordering = ['-date_posted']
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+
+        users = []
+        data_counter = Post.objects.values('author') \
+                           .annotate(author_count=Count('author')) \
+                           .order_by('-author_count')[:6]
+
+        for aux in data_counter:
+            users.append(User.objects.filter(pk=aux['author']).first())
+
+        data['users'] = users
+        return data
 
 
 class UserPostListView(ListView):
@@ -43,34 +59,6 @@ def superuser_required():
         return WrappedClass
 
     return wrapper
-
-
-# def runcode(request, pk):
-#     if request.method == 'POST':
-#         code_part = request.POST['code_area']
-#         input_part = request.POST['input_area']
-#         y = input_part
-#         input_part = input_part.replace("\n", " ").split(" ")
-#
-#         def input():
-#             a = input_part[0]
-#             del input_part[0]
-#             return a
-#
-#         try:
-#             orig_stdout = sys.stdout
-#             sys.stdout = open('file.txt', 'w')
-#             exec(code_part)
-#             sys.stdout.close()
-#             sys.stdout = orig_stdout
-#             output = open('file.txt', 'r').read()
-#         except Exception as e:
-#             sys.stdout.close()
-#             sys.stdout = orig_stdout
-#             output = e
-#         print(output)
-#     res = render(request, '', {"code": code_part, "input": y, "output": output})
-#     return res
 
 class PostDetailView(LoginRequiredMixin, TemplateView):
     template_name = 'blog/post_detail.html'
@@ -104,7 +92,8 @@ class PostDetailView(LoginRequiredMixin, TemplateView):
         except Exception as e:
             sys.stdout.close()
             sys.stdout = orig_stdout
-            output = e.read()
+            output = e
+            #output = output.read()
         print(output)
 
         context = self.get_context_data(**kwargs)
@@ -116,7 +105,6 @@ class PostDetailView(LoginRequiredMixin, TemplateView):
         })
 
         return TemplateResponse(self.request, self.template_name, context)
-        # return render(request, '', {"code": code_part, "input": original_input, "output": output})
 
 
 @superuser_required()
@@ -152,3 +140,6 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
 
 def about(request):
     return render(request, 'blog/about.html', {'title': 'About'})
+
+def welcome(request):
+    return render(request, 'blog/welcome.html', {'title': 'Welcome'})

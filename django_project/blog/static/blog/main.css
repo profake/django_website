@@ -28,6 +28,14 @@ ul {
   font-weight: 500;
 }
 
+.bg-pyimg {
+    background-image: url('/static/bg.jpg');
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
 .content-section {
   background: #ffffff;
   padding: 10px 20px;
@@ -38,6 +46,10 @@ ul {
 
 .article-title {
   color: #444444;
+}
+
+.mainstuff{
+    min-height: 800px
 }
 
 a.article-title:hover {
