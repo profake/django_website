@@ -37,9 +37,15 @@
                     <h4 style="text-align: left">
                         {{ user.username }}
                     </h4>
-                    <p style="text-align: left">
-                        Problems solved: 0
+                    {% if user.is_staff %}
+                    <p style="text-align: left; color: blue">
+                        Staff
                     </p>
+                    {% else %}
+                    <p style="text-align: left; color: green">
+                        Member
+                    </p>
+                    {% endif %}
                 </div>
             </div>
         </article>

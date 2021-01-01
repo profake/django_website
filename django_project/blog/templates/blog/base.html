@@ -4,12 +4,13 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+    <title>PythonShikhi</title>
     {% load static %}
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'logo.png' %}">
 
     {% if user.is_authenticated %}
         <title>{{ title }}</title>
@@ -29,7 +30,7 @@
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
               <a class="nav-item nav-link" href="{% url 'blog-home' %}">Home</a>
-              <a class="nav-item nav-link" href="{% url 'blog-about' %}">About</a>
+              <a class="nav-item nav-link" href="{% url 'blog-categories' %}">Categories</a>
             </div>
             <div class="navbar-nav mr-auto">
               <a class="navbar-brand" href="#">
@@ -40,7 +41,9 @@
             <div class="navbar-nav">
                 {% if user.is_authenticated %}
                     <a class="nav-item nav-link" href="{% url 'profile' %}">{{ user.username }}</a>
+                {% if user.is_staff %}
                     <a class="nav-item nav-link" href="{% url 'post-create' %}">New Post</a>
+                {% endif %}
                     <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
                 {% else %}
                     <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
@@ -69,7 +72,7 @@
       </div>
     </main>
 <!-- Footer -->
-<footer class="footer font-small blue pt-4 bg-light">
+<footer class="footer font-small blue pt-4 bg-dark">
     <!-- Footer Links -->
     <div class="container-fluid text-center text-md-left">
 
@@ -80,8 +83,8 @@
             <div class="col-md-6 mt-md-0 mt-3">
 
                 <!-- Content -->
-                <h5 class="text-uppercase">Footer Content</h5>
-                <p>Here you can use rows and columns to organize your footer content.</p>
+                <h5 class="text-uppercase text-light">PythonShikhi</h5>
+                <p class="text-light">You can find info here.</p>
 
             </div>
             <!-- Grid column -->
@@ -92,20 +95,17 @@
             <div class="col-md-3 mb-md-0 mb-3">
 
                 <!-- Links -->
-                <h5 class="text-uppercase">Links</h5>
+                <h5 class="text-uppercase text-light">Links</h5>
 
                 <ul class="list-unstyled">
                     <li>
-                        <a href="#!">Link 1</a>
+                        <a href="#!">Facebook</a>
                     </li>
                     <li>
-                        <a href="#!">Link 2</a>
+                        <a href="#!">Instagram</a>
                     </li>
                     <li>
-                        <a href="#!">Link 3</a>
-                    </li>
-                    <li>
-                        <a href="#!">Link 4</a>
+                        <a href="#!">Twitter</a>
                     </li>
                 </ul>
 
@@ -116,20 +116,17 @@
             <div class="col-md-3 mb-md-0 mb-3">
 
                 <!-- Links -->
-                <h5 class="text-uppercase">Links</h5>
+                <h5 class="text-uppercase text-muted">Links</h5>
 
                 <ul class="list-unstyled">
                     <li>
-                        <a href="#!">Link 1</a>
+                        <a href="#!">About</a>
                     </li>
                     <li>
-                        <a href="#!">Link 2</a>
+                        <a href="#!">Privacy</a>
                     </li>
                     <li>
-                        <a href="#!">Link 3</a>
-                    </li>
-                    <li>
-                        <a href="#!">Link 4</a>
+                        <a href="#!">Cookie settings</a>
                     </li>
                 </ul>
 
@@ -143,8 +140,8 @@
     <!-- Footer Links -->
 
     <!-- Copyright -->
-    <div class="footer-copyright text-center py-3">© 2020 Copyright:
-        <a href="https://mdbootstrap.com/"> MDBootstrap.com</a>
+    <div class="footer-copyright text-center text-light py-3">© 2020 Copyright:
+        <a href="#!">PythonShikhi</a>
     </div>
     <!-- Copyright -->
 
