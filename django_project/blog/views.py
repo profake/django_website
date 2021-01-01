@@ -21,8 +21,8 @@ class PostListView(ListView):
     model = Post
     template_name = 'blog/home.html'
     context_object_name = 'posts'
-    paginate_by = 5
-    ordering = ['-date_posted']
+    paginate_by = 3
+    ordering = ['date_posted']
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -50,11 +50,11 @@ class UserPostListView(ListView):
         return Post.objects.filter(author=user)
 
 
-def superuser_required():
+def staff_required():
     def wrapper(wrapped):
         class WrappedClass(UserPassesTestMixin, wrapped):
             def test_func(self):
-                return self.request.user.is_superuser
+                return self.request.user.is_staff
 
         return WrappedClass
 
@@ -107,7 +107,7 @@ class PostDetailView(LoginRequiredMixin, TemplateView):
         return TemplateResponse(self.request, self.template_name, context)
 
 
-@superuser_required()
+@staff_required()
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     fields = ['title', 'content', 'image']
@@ -117,7 +117,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-@superuser_required()
+@staff_required()
 class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
     fields = ['title', 'content', 'image']
@@ -132,14 +132,14 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
     #     return False
 
 
-@superuser_required()
+@staff_required()
 class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
     success_url = '/'
 
 
-def about(request):
-    return render(request, 'blog/about.html', {'title': 'About'})
+def categories(request):
+    return render(request, 'blog/categories.html', {'title': 'Categories'})
 
 def welcome(request):
     return render(request, 'blog/welcome.html', {'title': 'Welcome'})
